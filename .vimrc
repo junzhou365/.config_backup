@@ -11,72 +11,81 @@ Plugin 'vim-airline/vim-airline-themes'
 Plugin 'chriskempson/base16-vim'
 Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
-Plugin 'easymotion/vim-easymotion'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'ervandew/supertab'
 Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'wikitopian/hardmode'
-Plugin 'tpope/vim-surround'
 Plugin 'moll/vim-bbye'
-"Plugin 'terryma/vim-expand-region'
-"Plugin 'Valloric/YouCompleteMe'
-"Plugin 'SirVer/ultisnips'
+Plugin 'mileszs/ack.vim'
+Plugin 'vim-scripts/vcscommand.vim'
+Plugin 'gabrielelana/vim-markdown'
+Plugin 'neomake/neomake'
+"Plugin 'tpope/vim-dispatch.git'
+Plugin 'vim-scripts/a.vim'
 
-call vundle#end()            " required
-filetype plugin indent on    " required<Paste>
+call vundle#end()             " required
+filetype plugin indent on     " required<Paste>
 
 set encoding=utf-8
-let base16colorspace=256  " Access colors present in 256 colorspace
-colorscheme base16-default-dark
+let base16colorspace=256   " Access colors present in 256 colorspace
+colorscheme base16-tomorrow-night
 set background=dark
 set guifont=Meslo_LG_M_for_Powerline:h10:cANSI:qDRAFT
+let mapleader=","
 
-set runtimepath^=~/.vim/bundle/ctrlp.vim
-let g:airline#extensions#tabline#enabled = 1
-let g:airline_powerline_fonts = 1
-let g:airline_theme='base16_default'
+" airline {
+  let g:airline_powerline_fonts = 1
+  let g:airline_theme='base16_default'
+  let g:airline#extensions#neomake#enabled = 1
+" }
 
 " common settings {
   syntax on
   set number
   set mouse=a
 " }
-let mapleader=","
 " Copy and Paste {
   function PasteFromTmp()
     let @" = readfile('/tmp/vitmp')[0]
   endfunc
 
-  vmap <leader>y y :call writefile([@"], '/tmp/vitmp')<CR>
-  nmap <leader>p :call PasteFromTmp()<CR>
+vmap <leader>y y :call writefile([@"], '/tmp/vitmp')<CR>
+nmap <leader>p :call PasteFromTmp()<CR>
 " }
 
 " Formatting {
-
-    set nowrap                      " Do not wrap long lines
-    set autoindent                  " Indent at the same level of the previous line
-    set shiftwidth=4                " Use indents of 4 spaces
-    set expandtab                   " Tabs are spaces, not tabs
-    set tabstop=4                   " An indentation every four columns
-    set softtabstop=4               " Let backspace delete indent
-    set nojoinspaces                " Prevents inserting two spaces after punctuation on a join (J)
-    set splitright                  " Puts new vsplit windows to the right of the current
-    set splitbelow                  " Puts new split windows to the bottom of the current
-    "set matchpairs+=<:>             " Match, to be used with %
-    set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
+  set nowrap                      " Do not wrap long lines
+  set autoindent                  " Indent at the same level of the previous line
+  set shiftwidth=4                " Use indents of 4 spaces
+  set expandtab                   " Tabs are spaces, not tabs
+  set tabstop=4                   " An indentation every four columns
+  set softtabstop=4               " Let backspace delete indent
+  set nojoinspaces                " Prevents inserting two spaces after punctuation on a join (J)
+  set splitright                  " Puts new vsplit windows to the right of the current
+  set splitbelow                  " Puts new split windows to the bottom of the current
+  "set matchpairs+=<:>             " Match, to be used with %
+  set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
 " }
 
-" toggle NERDTree
-map <C-y><C-t> :NERDTreeToggle<CR>
-" find dir where the current file is
-map <C-y><C-f> :NERDTreeFind<CR>
-vnoremap // y/<C-R>"<CR>
+" toggle NERDTree {
+  map <C-y><C-t> :NERDTreeToggle<CR>
+  " find dir where the current file is
+  map <C-y><C-f> :NERDTreeFind<CR>
+  vnoremap // y/<C-R><CR>
+" }
 
-" let ctrp be faster {
+" ctrl-p {
+  set runtimepath^=~/.vim/bundle/ctrlp.vim
   let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
-  if executable('ag')
-    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+  let g:ctrlp_clear_cache_on_exit = 0
+  let g:ctrlp_lazy_update = 20
+  if executable('rg')
+    set grepprg=rg\ --color=never
+    let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
   endif
+  set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
+
+  let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
 " }
 
 set dictionary=/usr/share/dict/words
@@ -84,8 +93,7 @@ set dictionary=/usr/share/dict/words
 " vim-airline appears even with only one buffer
 set laststatus=2
 
-" Qumulo Style
-" {
+" Qumulo Python Style {
   set smartcase
   set ff=unix
   set colorcolumn=80
@@ -129,91 +137,101 @@ set laststatus=2
   endfunction
 " }
 
-" ====== General Settings ======
+" search {
 " Press F4 to toggle highlighting on/off, and show current value.
-set incsearch
-noremap <F4> :set hlsearch! hlsearch?<CR>
+  set incsearch
+  set hlsearch
+  set lazyredraw
+  noremap <F4> :set hlsearch! hlsearch?<CR>
+" }
 
 " === mappings ===
 nmap G Gzz
 nmap n nzz
 nmap N Nzz
 
-"quick pairs
-imap <leader>' ''<ESC>i
-imap <leader>" ""<ESC>i
-imap <leader>( ()<ESC>i
-imap <leader>[ []<ESC>i
-
-" =========== EasyMotion ===========
-let g:EasyMotion_do_mapping = 0 " Disable default mappings
-
-" Jump to anywhere you want with minimal keystrokes, with just one key binding.
-" `s{char}{label}`
-nmap s <Plug>(easymotion-overwin-f)
-" or
-" `s{char}{char}{label}`
-" Need one more keystroke, but on average, it may be more comfortable.
-nmap ss <Plug>(easymotion-overwin-f2)
-
-" Turn on case insensitive feature
-let g:EasyMotion_smartcase = 1
-
-" Line motions
-map <Leader>j <Plug>(easymotion-j)
-map <Leader>k <Plug>(easymotion-k)
-map <Leader>w <Plug>(easymotion-w)
-map <Leader>b <Plug>(easymotion-B)
-map <Leader>e <Plug>(easymotion-e)
-
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
-nnoremap th  :bfirst<CR>
-nnoremap tj  :bnext<CR>
-nnoremap tk  :bprev<CR>
-nnoremap tl  :blast<CR>
-
 " BBye {
   nnoremap <leader>q :Bdelete<CR>
 " }
 
-" airline {
-  let g:airline#extensions#tabline#buffer_idx_mode = 1
-  nmap <leader>1 <Plug>AirlineSelectTab1
-  nmap <leader>2 <Plug>AirlineSelectTab2
-  nmap <leader>3 <Plug>AirlineSelectTab3
-  nmap <leader>4 <Plug>AirlineSelectTab4
-  nmap <leader>5 <Plug>AirlineSelectTab5
-  nmap <leader>6 <Plug>AirlineSelectTab6
-  nmap <leader>7 <Plug>AirlineSelectTab7
-  nmap <leader>8 <Plug>AirlineSelectTab8
-  nmap <leader>9 <Plug>AirlineSelectTab9
-  nmap <leader>- <Plug>AirlineSelectPrevTab
-  nmap <leader>+ <Plug>AirlineSelectNextTab
-" }
-
 " relative number {
-  function! NumberToggle()
-    if(&relativenumber == 1)
-      set norelativenumber
-    else
-      set relativenumber
-    endif
-  endfunc
-
-  nnoremap <F11> :call NumberToggle()<CR>
+  nnoremap <F11> :set norelativenumber! norelativenumber?<CR>
 " }
 
 " Spell {
-  function! SpellToggle()
-    if(&spell == 0)
-      set spell
-    else
-      set nospell
+  nnoremap <F10> :set spell! spell?<CR>
+" }
+
+" Cscope {
+if has("cscope")
+    if filereadable("cscope.out")
+        cs add cscope.out
     endif
-  endfunc
-  nnoremap <F10> :call SpellToggle()<CR>
+    if filereadable("pycscope.out")
+        cs add pycscope.out
+    endif
+    cs reset
+endif
+" }
+
+" ack {
+  if executable('rg')
+    let g:ackprg = 'rg --column -C 2'
+    let g:ackhighlight = 1
+  endif
+" }
+
+" ctags {
+  nnoremap <leader>] :ts <C-R>"<CR>
+" }
+
+" window {
+  nnoremap <leader>m :res <bar> :vert res<CR>
+" }
+
+" open another current buffer instance {
+  nnoremap <leader>" :let @"=@%<CR>
+  nnoremap <leader>e :e <C-R>"<CR>
+" }
+
+" build {
+  "set makeprg=build
+  "nnoremap <leader>b :Neomake!<CR>
+"
+
+" lint {
+  function! BuildSuccess(entry)
+    if a:entry.text == "build: success!"
+      echo "Build Success!"
+    endif
+  endfunction
+  let g:neomake_c_lint_maker = {
+    \ 'exe': 'build',
+    \ 'args': ['%:h'],
+    \ 'errorformat': '%f:%l:%c: %m',
+    \ 'postprocess': function('BuildSuccess'),
+    \ }
+  let g:neomake_cpp_lint_maker = {
+    \ 'exe': 'build',
+    \ 'args': ['%:h'],
+    \ 'errorformat': '%f:%l:%c: %m',
+    \ 'postprocess': function('BuildSuccess'),
+    \ }
+  "autocmd BufWritePost ~/src/*.c Neomake lint
+  "autocmd BufWritePost ~/src/*.h Neomake lint
+  let g:neomake_open_list = 2
+  nnoremap <leader>b :Neomake lint<CR>
+" }
+
+" highlights {
+  highlight SpellBad ctermfg='09' guifg='09'
+" }
+
+" checkttime {
+  nnoremap <leader>c :checktime<CR>
 " }
