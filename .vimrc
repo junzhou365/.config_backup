@@ -1,30 +1,27 @@
-set nocompatible              " be iMproved, required
-filetype off                  " required
+" Specify a directory for plugins
+" - For Neovim: ~/.local/share/nvim/plugged
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/.vim/plugged')
 
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+Plug 'VundleVim/Vundle.vim'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'chriskempson/base16-vim'
+Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdcommenter'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'moll/vim-bbye'
+"Plug 'vim-scripts/vcscommand.vim'
+"Plug 'gabrielelana/vim-markdown'
+Plug 'neomake/neomake'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'vim-scripts/a.vim'
+Plug 'ervandew/supertab'
 
-Plugin 'VundleVim/Vundle.vim'
-Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
-Plugin 'chriskempson/base16-vim'
-Plugin 'scrooloose/nerdtree'
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'terryma/vim-multiple-cursors'
-Plugin 'ervandew/supertab'
-Plugin 'christoomey/vim-tmux-navigator'
-Plugin 'wikitopian/hardmode'
-Plugin 'moll/vim-bbye'
-Plugin 'mileszs/ack.vim'
-Plugin 'vim-scripts/vcscommand.vim'
-Plugin 'gabrielelana/vim-markdown'
-Plugin 'neomake/neomake'
-"Plugin 'tpope/vim-dispatch.git'
-Plugin 'vim-scripts/a.vim'
-
-call vundle#end()             " required
-filetype plugin indent on     " required<Paste>
+" Initialize plugin system
+call plug#end()
 
 set encoding=utf-8
 let base16colorspace=256   " Access colors present in 256 colorspace
@@ -35,7 +32,7 @@ let mapleader=","
 
 " airline {
   let g:airline_powerline_fonts = 1
-  let g:airline_theme='base16_default'
+  "let g:airline_theme='base16_'
   let g:airline#extensions#neomake#enabled = 1
 " }
 
@@ -138,11 +135,11 @@ set laststatus=2
 " }
 
 " search {
-" Press F4 to toggle highlighting on/off, and show current value.
+" Press <F9> to toggle highlighting on/off, and show current value.
   set incsearch
   set hlsearch
   set lazyredraw
-  noremap <F4> :set hlsearch! hlsearch?<CR>
+  noremap <F9> :set hlsearch! hlsearch?<CR>
 " }
 
 " === mappings ===
@@ -234,4 +231,19 @@ endif
 
 " checkttime {
   nnoremap <leader>c :checktime<CR>
+" }
+
+" fzf {
+  nnoremap <C-p> :FZF<CR>
+  command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   <bang>0)
+  nnoremap <C-s> :Rg<space>
+" }
+
+" file encoding {
+set fileencodings=utf-8,gb2312
 " }
