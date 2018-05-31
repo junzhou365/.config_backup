@@ -1,9 +1,60 @@
+" Specify a directory for plugins
+" - For Neovim: ~/.local/share/nvim/plugged
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/.vim/plugged')
 
-syntax on
+Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdcommenter'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'moll/vim-bbye'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'vim-scripts/a.vim'
+Plug 'itchyny/lightline.vim'
+Plug 'Valloric/YouCompleteMe', { 'for': ['go', 'python', 'c', 'cc', 'cpp'] }
+"Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
+Plug 'fatih/vim-go'
+Plug 'vim-scripts/AnsiEsc.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'sheerun/vim-polyglot'
+Plug 'tpope/vim-surround'
+Plug 'jiangmiao/auto-pairs'
+" color
+"Plug 'iCyMind/NeoSolarized'
+Plug 'NLKNguyen/papercolor-theme'
+"Plug 'jdkanani/vim-material-theme'
+"Plug 'kristijanhusak/vim-hybrid-material'
+Plug 'joshdick/onedark.vim'
+Plug 'arcticicestudio/nord-vim'
+"Plug 'chriskempson/base16-vim'
+"Plug 'vim-airline/vim-airline'
+"Plug 'vim-airline/vim-airline-themes'
+"Plug 'rakr/vim-one'
+"Plug 'morhetz/gruvbox'
+"Plug 'shinchu/lightline-gruvbox.vim'
+"Plug 'mhartington/oceanic-next'
+" Initialize plugin system
+call plug#end()
+
+syntax enable
+
+if exists("$ALACRITTY")
+  set termguicolors
+  "set background=light
+  let g:nord_comment_brightness = 15
+  colorscheme nord
+else
+  "set background=light
+  "colorscheme PaperColor
+  let g:nord_comment_brightness = 15
+  colorscheme nord
+endif
+
+
 set number
 set encoding=utf-8
 let mapleader=","
-colorscheme desert
 
 " Copy and Paste {
   function! PasteFromTmp()
@@ -13,8 +64,6 @@ colorscheme desert
 vmap <leader>y y :call writefile([@"], '/tmp/vitmp')<CR>
 nmap <leader>p :call PasteFromTmp()<CR>
 " }
-"
-highlight Comment cterm=italic
 
 " Formatting {
   set nowrap                      " Do not wrap long lines
@@ -80,11 +129,8 @@ nnoremap <C-l> <C-w>l
   nnoremap <leader>q :Bdelete<CR>
 " }
 
-" relative number {
+" Function Keys {
   nnoremap <F11> :set norelativenumber! norelativenumber?<CR>
-" }
-
-" Spell {
   nnoremap <F10> :set spell! spell?<CR>
 " }
 
@@ -121,13 +167,52 @@ endif
   nnoremap <leader>c :checktime<CR>
 " }
 
+" fzf {
+  nnoremap <C-p> :FZF<CR>
+  command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   <bang>0)
+  nnoremap <C-s> :Rg<space>
+  nnoremap <C-b> :Buffers<CR>
+" Mapping selecting mappings
+nmap <leader><tab> <plug>(fzf-maps-n)
+xmap <leader><tab> <plug>(fzf-maps-x)
+omap <leader><tab> <plug>(fzf-maps-o)
+
+" Insert mode completion
+imap <c-x><c-k> <plug>(fzf-complete-word)
+imap <c-x><c-f> <plug>(fzf-complete-path)
+imap <c-x><c-j> <plug>(fzf-complete-file-ag)
+imap <c-x><c-l> <plug>(fzf-complete-line)
+
+" Advanced customization using autoload functions
+inoremap <expr> <c-x><c-k> fzf#vim#complete#word({'left': '15%'})
+" }
+
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
 " file encoding {
 set fileencodings=utf-8,gb2312
 " }
 
-"\ 'colorscheme': 'PaperColor_light',
 let g:lightline = {
-      \ 'colorscheme': 'solarized',
+      \ 'colorscheme': 'nord',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'gitbranch', 'readonly', 'relativepath', 'modified'] ],
@@ -146,3 +231,20 @@ let g:lightline = {
       \ },
       \ }
 
+" YouCompleteMe
+  nnoremap <leader>jd :YcmCompleter GoTo<CR>
+  nnoremap <leader>jc :YcmCompleter GoToDeclaration<CR>
+  nnoremap <leader>je :YcmCompleter GetDoc<CR>
+
+" terminal mode
+  tnoremap <C-]> <C-\><C-n>
+  tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
+  nnoremap <leader>t :8split +:terminal<CR>
+
+" tabs
+"  Make sure to use Option key as Meta key on Mac
+  nnoremap <M-t> :tabnew<CR>
+  nnoremap <M-w> :tabclose<CR>
+  nnoremap <M-l> :tabnext<CR>
+  nnoremap <M-h> :tabprev<CR>
+"
