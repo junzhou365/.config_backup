@@ -2,12 +2,12 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-  export ZSH=/home/vagrant/.oh-my-zsh
+export ZSH=/Users/jzhou/.oh-my-zsh
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="robbyrussell"
+ZSH_THEME="my-theme"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -51,7 +51,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -73,7 +73,7 @@ source $ZSH/oh-my-zsh.sh
 # export ARCHFLAGS="-arch x86_64"
 
 # ssh
-# export SSH_KEY_PATH="~/.ssh/dsa_id"
+# export SSH_KEY_PATH="~/.ssh/rsa_id"
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
@@ -83,8 +83,21 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+alias connect_aws="ssh -i "/Users/jzhou/s_config/for-my-mac.pem" ubuntu@ec2-34-213-136-85.us-west-2.compute.amazonaws.com"
+alias connect_aws_2="ssh -i "/Users/jzhou/s_config/for-my-mac.pem" ubuntu@yajulianzhou.com"
+alias connect_aws_through_ip="ssh -i /Users/jzhou/s_config/for-my-mac.pem ubuntu@34.213.136.85"
+alias ct="/usr/local/Cellar/ctags/5.8_1/bin/ctags"
 
-BASE16_SHELL=$HOME/.config/base16-shell/
-[ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval "$($BASE16_SHELL/profile_helper.sh)"
+export PATH="/usr/local/opt/python/libexec/bin:$PATH"
 
-. /usr/local/lib/python2.7/dist-packages/powerline/bindings/zsh/powerline.zsh
+export PATH="$HOME/.cargo/bin:$PATH"
+export PATH=$PATH:$(go env GOPATH)/bin
+
+# Java
+export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
+export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+#BASE16_SHELL=$HOME/.config/base16-shell/
+#[ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval "$($BASE16_SHELL/profile_helper.sh)"
