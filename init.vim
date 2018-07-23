@@ -12,7 +12,7 @@ Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'vim-scripts/a.vim'
 Plug 'itchyny/lightline.vim'
-Plug 'Valloric/YouCompleteMe', { 'for': ['go', 'python', 'c', 'cc', 'cpp'] }
+Plug 'Valloric/YouCompleteMe', { 'for': ['python', 'c', 'cc', 'cpp'] }
 "Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
 Plug 'fatih/vim-go'
 Plug 'vim-scripts/AnsiEsc.vim'
@@ -20,13 +20,22 @@ Plug 'tpope/vim-fugitive'
 Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-surround'
 Plug 'jiangmiao/auto-pairs'
+Plug 'vim-scripts/FIGlet.vim'
+Plug 'fadein/vim-FIGlet'
+Plug 'w0rp/ale'
+Plug 'Shougo/deoplete.nvim'
+Plug 'zchee/deoplete-go', { 'do': 'make'}
 " color
 "Plug 'iCyMind/NeoSolarized'
-Plug 'NLKNguyen/papercolor-theme'
+"Plug 'NLKNguyen/papercolor-theme'
 "Plug 'jdkanani/vim-material-theme'
 "Plug 'kristijanhusak/vim-hybrid-material'
-Plug 'joshdick/onedark.vim'
+"Plug 'joshdick/onedark.vim'
 Plug 'arcticicestudio/nord-vim'
+"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"Plug 'zchee/deoplete-go', { 'do': 'make'}
+"Plug 'nsf/gocode', { 'rtp': 'nvim', 'do': '~/.vim/plugged/gocode/nvim/symlink.sh' }
+"Plug 'mdempsky/gocode', { 'rtp': 'nvim', 'do': '~/.config/nvim/plugged/gocode/nvim/symlink.sh' }
 "Plug 'chriskempson/base16-vim'
 "Plug 'vim-airline/vim-airline'
 "Plug 'vim-airline/vim-airline-themes'
@@ -248,3 +257,25 @@ let g:lightline = {
   nnoremap <M-l> :tabnext<CR>
   nnoremap <M-h> :tabprev<CR>
 "
+
+" go
+
+  let g:go_fmt_command = "goimports"
+  let g:go_auto_type_info = 1
+
+  " Enable deoplete on startup
+  let g:deoplete#enable_at_startup = 1
+  "let g:deoplete#sources#go#gocode_binary = $GOPATH.'/bin/gocode'
+  filetype plugin on
+
+
+" deoplete
+inoremap <silent><expr> <TAB>
+\ pumvisible() ? "\<C-n>" :
+\ <SID>check_back_space() ? "\<TAB>" :
+\ deoplete#mappings#manual_complete()
+
+function! CloseAllUseless()
+  windo if &buftype == "quickfix" || &buftype == "locationlist" | lclose | endif
+endfunc
+nmap <leader>u :call CloseAllUseless()<CR>
